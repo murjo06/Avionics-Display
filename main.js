@@ -16,21 +16,40 @@ light.position.set(0, 10, 0);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 
-let mpu6050;
-let mpu6050Set = false;
-let bme280;
-let bme280Set = false;
+const colors = {
+    progress: 0x234ec4,
+    success: 0x2dbd3e,
+    failure: 0xd61a1a
+}
+
+const mpu6050 = {
+    status: "progress",
+    set: false,
+    object: undefined
+};
+const bme280 = {
+    status: "progress",
+    set: false,
+    object: undefined
+};
+const hmc5883l = {
+    status: "progress",
+    set: false,
+    object: undefined
+}
 
 const loader = new GLTFLoader;
-await loader.load("./models/mpu6050.gltf", (gltf) => {
-    mpu6050 = new THREE.Object3D().copy(gltf.scene);
-    console.log(gltf);
-    scene.add(mpu6050);
+loader.load("./models/mpu6050.gltf", (gltf) => {
+    mpu6050.object = new THREE.Object3D().copy(gltf.scene);
+    scene.add(mpu6050.object);
 });
-
-await loader.load("./models/bme280.gltf", (gltf) => {
-    bme280 = new THREE.Object3D().copy(gltf.scene);
-    scene.add(bme280);
+loader.load("./models/bme280.gltf", (gltf) => {
+    bme280.object = new THREE.Object3D().copy(gltf.scene);
+    scene.add(bme280.object);
+});
+loader.load("./models/hmc5883l.gltf", (gltf) => {
+    hmc5883l.object = new THREE.Object3D().copy(gltf.scene);
+    scene.add(hmc5883l.object);
 });
 
 camera.position.z = 10;
@@ -39,10 +58,19 @@ camera.position.x = 0;
 controls.update();
 
 function animate() {
-    if(mpu6050 && !mpu6050Set) {
-        mpu6050.position.set(20, 0, 0);
-        mpu6050.children[0].material.color.setHex(0x2dbd3e);
-        mpu6050Set = true;
+    if(mpu6050.object && !mpu6050.set) {
+        mpu6050.object.position.set(20, 0, 0);
+        mpu6050.object.children[0].material.color.setHex(colors[mpu6050.status]);
+        mpu6050.set = true;
+    }
+    if(bme280.object && !bme280.set) {
+        bme280.object.children[0].material.color.setHex(colors[bme280.status]);
+        bme280.set = true;
+    }
+    if(hmc5883l.object && !hmc5883l.set) {
+        hmc5883l.object.children[0].material.color.setHex(colors[bme280.status]);
+        hmc5883l.object.position.set(0, 0, 20);
+        hmc5883l.set = true;
     }
     requestAnimationFrame(animate);
     controls.update();
