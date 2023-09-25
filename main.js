@@ -17,6 +17,7 @@ light.position.set(0, 10, 0);
 const controls = new OrbitControls(camera, renderer.domElement);
 
 const colors = {
+    passive: 0xf28f38,
     progress: 0x234ec4,
     success: 0x2dbd3e,
     failure: 0xd61a1a
@@ -37,6 +38,11 @@ const hmc5883l = {
     set: false,
     object: undefined
 }
+const tilt = {
+    status: "passive",
+    set: false,
+    object: undefined
+}
 
 const loader = new GLTFLoader;
 loader.load("./models/mpu6050.gltf", (gltf) => {
@@ -50,6 +56,10 @@ loader.load("./models/bme280.gltf", (gltf) => {
 loader.load("./models/hmc5883l.gltf", (gltf) => {
     hmc5883l.object = new THREE.Object3D().copy(gltf.scene);
     scene.add(hmc5883l.object);
+});
+loader.load("./models/tilt.gltf", (gltf) => {
+    tilt.object = new THREE.Object3D().copy(gltf.scene);
+    scene.add(tilt.object);
 });
 
 camera.position.z = 10;
@@ -68,9 +78,14 @@ function animate() {
         bme280.set = true;
     }
     if(hmc5883l.object && !hmc5883l.set) {
-        hmc5883l.object.children[0].material.color.setHex(colors[bme280.status]);
+        hmc5883l.object.children[0].material.color.setHex(colors[hmc5883l.status]);
         hmc5883l.object.position.set(0, 0, 20);
         hmc5883l.set = true;
+    }
+    if(tilt.object && !tilt.set) {
+        tilt.object.children[0].material.color.setHex(colors[tilt.status]);
+        tilt.object.position.set(0, 0, -20);
+        tilt.set = true;
     }
     requestAnimationFrame(animate);
     controls.update();
