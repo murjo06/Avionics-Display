@@ -7,3 +7,28 @@ canvas {
     width: 100%;
     height: 100%;
 }
+#ui {
+    width: 100%;
+    height: 100%;
+    color: white;
+    font-family: "Roboto", sans-serif;
+    width: max-content;
+}
+#states {
+    width: max-content;
+    position: fixed;
+    bottom: 2em;
+    left: 50%;
+    transform: translate(-50%, 0);
+    background-color: rgb(55, 55, 55);
+    box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.1);
+    padding: 1em;
+    border-radius: 0.4em;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+p {
+    width: max-content;
+    margin: 0;
+}
